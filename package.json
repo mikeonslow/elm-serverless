@@ -1,0 +1,26 @@
+{
+  "name": "elm-serverless",
+  "version": "1.0.0",
+  "description": "Example app for deployment to netlify",
+  "main": "index.js",
+  "scripts": {
+    "build": "exit 0",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeonslow/elm-serverless.git"
+  },
+  "author": "Mike Onslow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mikeonslow/elm-serverless/issues"
+  },
+  "homepage": "https://github.com/mikeonslow/elm-serverless#readme",
+  "devDependencies": {
+    "netlify-cli": "^2.11.7"
+  },
+  "dependencies": {
+    "faunadb": "^2.6.1"
+  }
+}
