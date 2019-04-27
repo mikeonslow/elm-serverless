@@ -1,3 +1,5 @@
+
+import '../../node_modules/bootstrap-scss/bootstrap.scss';
 import { Elm } from "../elm/Main.elm";
 
 (function () {

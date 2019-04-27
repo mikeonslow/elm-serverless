@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/mikeonslow/elm-serverless#readme",
   "dependencies": {
-    "faunadb": "^2.6.1"
+    "bootstrap-scss": "^4.3.1",
+    "faunadb": "^2.6.1",
+    "gotrue-js": "^0.9.24"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.0.2",
