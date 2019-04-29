@@ -9,10 +9,9 @@ exports.handler = async (event, context) => {
   const url = getUrl(apiHost, filters);
 
   request.get(url, function(err, httpResponse, responseBody) {
-    console.log(err, httpResponse, responseBody);
     callback(null, {
       statusCode: 200,
-      body: JSON.stringify(responseBody)
+      body: responseBody
     });
   });
 };
