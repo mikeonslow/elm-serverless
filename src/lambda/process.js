@@ -5,21 +5,21 @@ var querystring = require('querystring');
 exports.handler = (event, context, callback) => {
 
   const apiHost = process.env.API_HOST;
-  const {body} = event;
-  var filters = { 'by_state': 'michigan', 'by_city': 'ferndale' };
-
+  const { body } = event;
+  const filters = JSON.parse(body);
   const url = getUrl(apiHost, filters);
-  
-  request.get(url, function (err, httpResponse, body) {
+
+  request.get(url, function (err, httpResponse, responseBody) {
     callback(null, {
-      headers: [],
-      statusCode: 200,
-      body: body,
-    }); 
+      headers: [
+        { 'content-type': 'application/json' }
+      ],
+      statusCode: httpResponse.statusCode,
+      body: responseBody,
+    });
   });
 };
 
-function getUrl(apiHost, filters)
-{
+function getUrl(apiHost, filters) {
   return apiHost + '?' + querystring.stringify(filters);
 }

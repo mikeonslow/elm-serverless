@@ -11,11 +11,12 @@ import { Elm } from "../elm/Main.elm";
         });
 
         var xhr = new XMLHttpRequest();
-        xhr.addEventListener('load', function(data) {
+        xhr.addEventListener('load', function (data) {
             console.log(data);
         });
         xhr.open('POST', '.netlify/functions/process');
-        xhr.send(JSON.stringify({}));
+        xhr.setRequestHeader('content-type', 'application/json');
+        xhr.send(JSON.stringify({ 'by_state': 'michigan', 'by_city': 'ferndale' }));
 
     }
 
