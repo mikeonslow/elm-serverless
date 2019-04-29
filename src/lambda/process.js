@@ -12,9 +12,6 @@ exports.handler = (event, context, callback) => {
   request.get(url, function (err, httpResponse, responseBody) {
     console.log(err, httpResponse, responseBody);
     callback(null, {
-      headers: [
-        { 'content-type': 'application/json' }
-      ],
       statusCode: 200,
       body: JSON.stringify(responseBody),
     });
