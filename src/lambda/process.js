@@ -14,7 +14,7 @@ exports.handler = (event, context, callback) => {
       headers: [
         { 'content-type': 'application/json' }
       ],
-      statusCode: httpResponse.statusCode,
+      statusCode: 200,
       body: responseBody,
     });
   });
