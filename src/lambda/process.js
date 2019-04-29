@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
     console.log(err, httpResponse, responseBody);
     callback(null, {
       statusCode: 200,
-      body: JSON.stringify(responseBody)
+      body: responseBody
     });
   });
 };
