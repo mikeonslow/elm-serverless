@@ -15,7 +15,7 @@ exports.handler = (event, context, callback) => {
         { 'content-type': 'application/json' }
       ],
       statusCode: 200,
-      body: JSON.stringify(responseBody),
+      body: {},
     });
   });
 };
