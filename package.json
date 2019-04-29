@@ -4,7 +4,7 @@
   "description": "Example app for deployment to netlify",
   "main": "index.js",
   "scripts": {
-    "deploy": "webpack --mode production",
+    "deploy": "npm run lambda:build && webpack --mode production",
     "watch": "webpack --mode production --watch",
     "elm": "elm",
     "lambda:serve": "npx netlify-lambda serve ./src/lambda",
