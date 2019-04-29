@@ -11,7 +11,7 @@ exports.handler = async (event, context) => {
   request.get(url, function(err, httpResponse, responseBody) {
     callback(null, {
       statusCode: 200,
-      body: JSON.stringify(responseBody)
+      body: "test"
     });
   });
 };
