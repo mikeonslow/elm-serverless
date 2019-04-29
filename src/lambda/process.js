@@ -10,6 +10,7 @@ exports.handler = (event, context, callback) => {
   const url = getUrl(apiHost, filters);
 
   request.get(url, function (err, httpResponse, responseBody) {
+    console.log(err, httpResponse, responseBody);
     callback(null, {
       headers: [
         { 'content-type': 'application/json' }
