@@ -6,7 +6,9 @@
   "scripts": {
     "deploy": "webpack --mode production",
     "watch": "webpack --mode development --watch",
-    "elm": "elm"
+    "elm": "elm",
+    "lambda:serve": "npx netlify-lambda serve ./src/lambda",
+    "lambda:build": "npx netlify-lambda build ./src/lambda"
   },
   "repository": {
     "type": "git",
@@ -20,8 +22,11 @@
   "homepage": "https://github.com/mikeonslow/elm-serverless#readme",
   "dependencies": {
     "bootstrap-scss": "^4.3.1",
+    "dotenv": "^7.0.0",
     "faunadb": "^2.6.1",
-    "gotrue-js": "^0.9.24"
+    "gotrue-js": "^0.9.24",
+    "netlify-lambda": "^1.4.5",
+    "querystring": "^0.2.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.0.2",
@@ -34,6 +39,7 @@
     "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.0"
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.3.1"
   }
 }

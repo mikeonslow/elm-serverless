@@ -2,4 +2,5 @@
 ID = "394a43f2-146b-49c2-be1f-1d006612ca46"
 
 [build]
-publish = "dist"
+  functions = "./functions"
+  publish = "dist"
