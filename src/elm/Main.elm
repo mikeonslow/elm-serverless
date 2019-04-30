@@ -1,7 +1,12 @@
-port module Main exposing (init, initialModel, main, subscriptions, update, view)
+module Main exposing (init, initialModel, main, subscriptions, update, view)
 
+import Bootstrap.Button as Button
+import Bootstrap.Form as Form
+import Bootstrap.Form.Input as Input
 import Browser
 import Html exposing (Html, text)
+import Html.Attributes exposing (..)
+import States exposing (list)
 
 
 initialModel : Model
@@ -44,7 +49,14 @@ type BreweryType
 
 view : Model -> Html Msg
 view model =
-    text "Hello, World!!!!!"
+    Form.formInline []
+        [ Input.text [ Input.attrs [ placeholder "Search" ] ]
+        , Button.button
+            [ Button.primary
+            , Button.attrs [ class "ml-sm-2 my-2" ]
+            ]
+            [ text "Search" ]
+        ]
 
 
 type Msg
