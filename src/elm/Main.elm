@@ -8,38 +8,25 @@ initialModel : Model
 initialModel =
     { breweries = [] }
 
+type alias Model =
+    { breweries : List Brewery }
 
 type alias Brewery =
     { id : Int
     , name : String
+    , breweryType : String -- Refactor to Custom Type
+    , street : String
+    , city : String
+    , state : String
+    , postalCode : String
+    , country : String
+    , longitude : String
+    , latitude : String
+    , phone : String
+    , websiteUrl : String
+    , updated_at : String
+    , tags : List String
     }
-
-
-
-{--
-
-{
-	"id": 3405,
-	"name": "Axle Brewing Company",
-	"brewery_type": "micro",
-	"street": "567 Livernois St",
-	"city": "Ferndale",
-	"state": "Michigan",
-	"postal_code": "48220-2303",
-	"country": "United States",
-	"longitude": "-83.1428144",
-	"latitude": "42.4508021",
-	"phone": "2486137002",
-	"website_url": "http://www.axlebrewing.com",
-	"updated_at": "2018-08-24T00:42:08.765Z",
-	"tag_list": []
-}
-
---}
-
-
-type alias Model =
-    { breweries : List Brewery }
 
 
 view : Model -> Html Msg
