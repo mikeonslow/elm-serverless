@@ -8,8 +8,10 @@ initialModel : Model
 initialModel =
     { breweries = [] }
 
+
 type alias Model =
     { breweries : List Brewery }
+
 
 type alias Brewery =
     { id : Int
@@ -27,6 +29,17 @@ type alias Brewery =
     , updated_at : String
     , tags : List String
     }
+
+
+type BreweryType
+    = Micro
+    | Regional
+    | Brewpub
+    | Large
+    | Planning
+    | Bar
+    | Contract
+    | Proprietor
 
 
 view : Model -> Html Msg
