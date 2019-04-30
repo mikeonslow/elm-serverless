@@ -6,13 +6,15 @@ import Html exposing (Html, text)
 
 initialModel : Model
 initialModel =
-    { breweries: List Brewery }
+    { breweries = [] }
 
-type alias Brewery = {
-    id: Int,
-    
-    name: String
-}
+
+type alias Brewery =
+    { id : Int
+    , name : String
+    }
+
+
 
 {--
 
@@ -37,7 +39,7 @@ type alias Brewery = {
 
 
 type alias Model =
-    {}
+    { breweries : List Brewery }
 
 
 view : Model -> Html Msg
