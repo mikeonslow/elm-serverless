@@ -11,6 +11,7 @@
             "elm/html": "1.0.0",
             "elm/http": "2.0.0",
             "elm-community/string-extra": "4.0.1",
+            "jinjor/elm-debounce": "3.0.0",
             "rundis/elm-bootstrap": "5.1.0"
         },
         "indirect": {

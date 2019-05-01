@@ -10,12 +10,14 @@ import Bootstrap.Grid.Row as Row
 import Bootstrap.Text as Text
 import Brewery
 import Browser
+import Debounce exposing (Debounce)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import States
 import String.Extra as String
+import Task exposing (..)
 
 
 
@@ -27,6 +29,7 @@ initialModel =
     { breweries = []
     , selectedState = Nothing
     , cityQuery = ""
+    , debounce = Debounce.init
     }
 
 
@@ -34,6 +37,7 @@ type alias Model =
     { breweries : List Brewery.Data
     , selectedState : Maybe String
     , cityQuery : String
+    , debounce : Debounce String
     }
 
 
@@ -58,7 +62,11 @@ view model =
                     [ Form.label [] [ text "State" ]
                     , Select.select [ Select.large, Select.onChange StateSelectionChanged ] (viewStateList model)
                     , Form.label [] [ text "City" ]
-                    , Input.text [ Input.large, Input.attrs [ placeholder "e.g. Southfield" ] ]
+                    , Input.text
+                        [ Input.large
+                        , Input.attrs [ placeholder "e.g. Southfield" ]
+                        , Input.onInput CityQueryUpdated
+                        ]
                     ]
                 ]
             ]
@@ -82,7 +90,10 @@ viewStateItem state selectedState =
 
 type Msg
     = OpenBrewApiResponsed
+    | CityQuerySaved String
     | StateSelectionChanged String
+    | DebounceTriggered Debounce.Msg
+    | CityQueryUpdated String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -93,10 +104,37 @@ update msg model =
             , Cmd.none
             )
 
+        CityQueryUpdated s ->
+            let
+                ( debounce, cmd ) =
+                    Debounce.push debounceConfig s model.debounce
+            in
+            ( { model
+                | cityQuery = s
+                , debounce = debounce
+              }
+            , cmd
+            )
+
+        DebounceTriggered msg_ ->
+            let
+                ( debounce, cmd ) =
+                    Debounce.update
+                        debounceConfig
+                        (Debounce.takeLast save)
+                        msg_
+                        model.debounce
+            in
+            ( { model | debounce = debounce }
+            , cmd
+            )
+
         _ ->
             ( model, Cmd.none )
 
-
+save : String -> Cmd Msg
+save s =
+    Task.perform CityQuerySaved (Task.succeed s)
 
 -- SUBSCRIPTIONS
 
@@ -124,6 +162,16 @@ init _ =
     ( initialModel
     , Cmd.none
     )
+
+
+
+-- CONFIG
+
+
+debounceConfig =
+    { strategy = Debounce.later 1000
+    , transform = DebounceTriggered
+    }
 
 
 
