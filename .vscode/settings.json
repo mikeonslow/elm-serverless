@@ -1,0 +1,9 @@
+{
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "files.autoSave": "afterDelay",
+  "[elm]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveTimeout": 3000
+  }
+}

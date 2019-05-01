@@ -1,5 +1,5 @@
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = {
   entry: "./src/js/app.js",
 
@@ -59,6 +59,6 @@ module.exports = {
     new UglifyJsPlugin({
       uglifyOptions: { mangle: true }
     }),
-    new CopyWebpackPlugin([{ from: 'src/index.html', to: '.' }])
+    new CopyWebpackPlugin([{ from: "src/index.html", to: "." }])
   ]
 };
