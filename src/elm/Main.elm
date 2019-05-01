@@ -89,7 +89,7 @@ viewStateItem state selectedState =
 
 
 type Msg
-    = OpenBrewApiResponsed
+    = OpenBrewApiResponsed (Result Http.Error (List Brewery.Data))
     | CityQuerySaved String
     | StateSelectionChanged String
     | DebounceTriggered Debounce.Msg
@@ -100,8 +100,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         StateSelectionChanged state ->
-            ( { model | selectedState = Just state }
-            , Cmd.none
+            let
+                updatedModel =
+                    { model | selectedState = Just state }
+            in
+            ( updatedModel
+            , postBreweries updatedModel
             )
 
         CityQueryUpdated s ->
@@ -116,6 +120,34 @@ update msg model =
             , cmd
             )
 
+        CityQuerySaved city ->
+            let
+                updatedModel =
+                    { model | cityQuery = city }
+            in
+            ( updatedModel
+            , postBreweries updatedModel
+            )
+
+        OpenBrewApiResponsed response ->
+            case response of
+                Ok breweries ->
+                    let
+                        updatedModel =
+                            { model | breweries = breweries }
+                    in
+                    ( updatedModel, Cmd.none )
+
+                Err error ->
+                    let
+                        x =
+                            Debug.log "error" error
+
+                        -- updatedModel =
+                        --     { model | errorMessage = "An error occurred while attempted to fetch your portfolio" }
+                    in
+                    ( model, Cmd.none )
+
         DebounceTriggered msg_ ->
             let
                 ( debounce, cmd ) =
@@ -129,12 +161,12 @@ update msg model =
             , cmd
             )
 
-        _ ->
-            ( model, Cmd.none )
 
 save : String -> Cmd Msg
 save s =
     Task.perform CityQuerySaved (Task.succeed s)
+
+
 
 -- SUBSCRIPTIONS
 
@@ -176,6 +208,22 @@ debounceConfig =
 
 
 -- HELPERS
+
+
+postBreweries : Model -> Cmd Msg
+postBreweries { selectedState, cityQuery } =
+    let
+        state =
+            Maybe.withDefault "" selectedState
+    in
+    Http.post
+        { url = brewApiEndpoint
+        , body = Http.jsonBody (Brewery.queryEncoder state cityQuery)
+        , expect =
+            Http.expectJson
+                OpenBrewApiResponsed
+                Brewery.decoder
+        }
 
 
 brewApiEndpoint =
