@@ -7,15 +7,16 @@ import Bootstrap.Form.Select as Select
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
+import Bootstrap.Text as Text
 import Brewery
 import Browser
-import Html exposing (Html, text)
+import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import States
 import String.Extra as String
-import Bootstrap.Text as Text
+
 
 
 -- MODEL
@@ -44,12 +45,16 @@ view : Model -> Html Msg
 view model =
     Grid.container []
         [ Grid.row []
+            [ Grid.col [ Col.attrs [ class "text-center" ] ]
+                [ h1 [] [ text "Elm Brewfinder" ] ]
+            ]
+        , Grid.row []
             [ Grid.col []
                 [ text " " ]
             ]
         , Grid.row []
-            [ Grid.col [ Col.textAlign Text.alignXsCenter]
-                [ Form.formInline []
+            [ Grid.col [ Col.textAlign Text.alignXsCenter ]
+                [ Form.formInline [ justifyContentCenter ]
                     [ Form.label [] [ text "State" ]
                     , Select.select [ Select.large, Select.onChange StateSelectionChanged ] (viewStateList model)
                     , Form.label [] [ text "City" ]
@@ -62,6 +67,7 @@ view model =
 
 viewStateList { selectedState } =
     States.list
+        |> (::) ""
         |> List.map String.toTitleCase
         |> List.map (\state -> Select.item [] [ text <| state ])
 
@@ -126,3 +132,7 @@ init _ =
 
 brewApiEndpoint =
     "/.netlify/functions/process"
+
+
+justifyContentCenter =
+    class "justify-content-center"
