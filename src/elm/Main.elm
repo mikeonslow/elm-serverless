@@ -1,6 +1,8 @@
 module Main exposing (init, initialModel, main, subscriptions, update, view)
 
 import Bootstrap.Button as Button
+import Bootstrap.Card as Card
+import Bootstrap.Card.Block as Block
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
@@ -75,6 +77,8 @@ view model =
                     ]
                 ]
             ]
+        , Grid.row []
+            (List.map viewBrewery model.breweries)
         ]
 
 
@@ -87,6 +91,22 @@ viewStateList { selectedState } =
 
 viewStateItem state selectedState =
     Select.item [] [ text <| state ]
+
+
+viewBrewery brewery =
+    Grid.col [ Col.xs12 ]
+        [ Card.config [ Card.attrs [ class "mt-3" ] ]
+            |> Card.block []
+                [ Block.titleH4 [] [ text brewery.name ]
+                , Block.text [] [ text brewery.street, br [] [], text <| viewBreweryAddress brewery ]
+                , Block.link [ href <| mapsUrl brewery, target "_blank" ] [ text "View in Google Maps" ]
+                ]
+            |> Card.view
+        ]
+
+
+viewBreweryAddress { city, state, postalCode } =
+    city ++ ", " ++ state ++ ", " ++ postalCode
 
 
 
@@ -139,7 +159,7 @@ update msg model =
                 Ok breweries ->
                     let
                         updatedModel =
-                            { model | breweries = breweries }
+                            { model | breweries = List.sortBy .name breweries }
                     in
                     ( updatedModel, Cmd.none )
 
@@ -147,9 +167,6 @@ update msg model =
                     let
                         x =
                             Debug.log "error" error
-
-                        -- updatedModel =
-                        --     { model | errorMessage = "An error occurred while attempted to fetch your portfolio" }
                     in
                     ( model, Cmd.none )
 
@@ -229,6 +246,18 @@ postBreweries { selectedState, cityQuery } =
                 OpenBrewApiResponsed
                 Brewery.decoder
         }
+
+
+mapsUrl { name, street, city, state, postalCode } =
+    let
+        query =
+            String.join "," [ name, street, city, state, postalCode ]
+    in
+    "https://www.google.com/maps/search/?api=1&query=" ++ query
+
+
+
+-- Detroit%20Beer%20Co%2C%201529%20Broadway%20St%20Ste%20100%2C%20Detroit%2C%20Michigan
 
 
 brewApiEndpoint =
