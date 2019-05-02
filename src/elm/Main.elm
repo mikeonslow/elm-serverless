@@ -98,34 +98,29 @@ viewBreweries { breweries } =
         viewCol content =
             [ Grid.col (offset2Col8 ++ [ Col.attrs [ class "text-center" ] ]) content ]
 
-        viewLayer =
+        viewBreweryList =
             case breweries of
                 NotAsked ->
-                    viewCol
-                        [ Card.config []
-                            |> Card.block []
-                                [ Block.text [] [ text "Use the search fields above to search for breweries" ] ]
-                            |> Card.view
-                        ]
+                    viewCol viewNoSearch
 
                 Loading ->
-                    viewCol
-                        [ br [] []
-                        , br [] []
-                        , i [ class "fa-3x fas fa-spinner fa-pulse text-warning" ] []
-                        ]
+                    viewCol viewLoader
 
                 Failure err ->
                     let
                         x =
                             Debug.log "err" err
                     in
-                    viewCol [ text "Error...." ]
+                    viewCol viewError
 
                 Success breweryList ->
-                    List.map viewBrewery breweryList
+                    if List.isEmpty breweryList then
+                        viewCol viewNoBrewFound
+
+                    else
+                        List.map viewBrewery breweryList
     in
-    viewLayer
+    viewBreweryList
 
 
 viewBrewery brewery =
@@ -140,8 +135,40 @@ viewBrewery brewery =
         ]
 
 
+viewNoBrewFound =
+    [ Card.config []
+        |> Card.block []
+            [ Block.text []
+                [ i [ class "fa-3x fas fa-sad-tear color text-warning mb-1" ] []
+                , br [] []
+                , span [ style "vertical-align" "middle" ] [ text "No breweries found in this city/state " ]
+                ]
+            ]
+        |> Card.view
+    ]
+
+
 viewBreweryAddress { city, state, postalCode } =
     city ++ ", " ++ state ++ ", " ++ postalCode
+
+
+viewLoader =
+    [ br [] []
+    , br [] []
+    , i [ class "fa-3x fas fa-spinner fa-pulse text-warning" ] []
+    ]
+
+
+viewNoSearch =
+    [ Card.config []
+        |> Card.block []
+            [ Block.text [] [ text "Use the search fields above to search for breweries" ] ]
+        |> Card.view
+    ]
+
+
+viewError =
+    [ text "Error occurred fetching brews..." ]
 
 
 
