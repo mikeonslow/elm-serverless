@@ -198,7 +198,7 @@ update msg model =
         OpenBrewApiResponsed response ->
             let
                 updatedModel =
-                    { model | breweries = response }
+                    { model | breweries = sortBreweries response }
             in
             ( updatedModel, Cmd.none )
 
@@ -264,6 +264,14 @@ debounceConfig =
 -- HELPERS
 
 
+sortBreweries breweries =
+    let
+        sortedBreweries =
+            RemoteData.map (\b -> List.sortBy .name b) breweries
+    in
+    sortedBreweries
+
+
 postBreweries : Model -> Cmd Msg
 postBreweries { selectedState, cityQuery } =
     let
@@ -295,4 +303,4 @@ justifyContentCenter =
 
 
 offset2Col8 =
-    [ Col.attrs [ class "mt-3" ], Col.xs8, Col.offsetXs2 ]
+    [ Col.attrs [ class "mt-3" ], Col.xs12, Col.md8, Col.offsetMd2 ]
