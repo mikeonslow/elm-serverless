@@ -27,7 +27,7 @@ module.exports = {
         use: {
           loader: "elm-webpack-loader",
           options: {
-            debug: false
+            debug: true
           }
         }
       },
@@ -59,6 +59,8 @@ module.exports = {
     new UglifyJsPlugin({
       uglifyOptions: { mangle: true }
     }),
-    new CopyWebpackPlugin([{ from: "src/index.html", to: "." }])
+    new CopyWebpackPlugin([
+      { from: "src/index.html", to: "." },
+      { from: "src/images/*.png", to: "./images", flatten: true, }])
   ]
 };

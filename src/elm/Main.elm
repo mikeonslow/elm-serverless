@@ -49,12 +49,17 @@ view : Model -> Html Msg
 view model =
     Grid.container []
         [ Grid.row []
+            [ Grid.col []
+                [ text "\u{00A0}" ]
+            ]
+        , Grid.row
+            []
             [ Grid.col [ Col.attrs [ class "text-center" ] ]
-                [ h1 [] [ text "Elm Brewfinder" ] ]
+                [ img [ src "/images/beer_mugs.png", height 100 ] [], h1 [] [ text "Elm Brewfinder" ] ]
             ]
         , Grid.row []
             [ Grid.col []
-                [ text " " ]
+                [ text "\u{00A0}" ]
             ]
         , Grid.row []
             [ Grid.col [ Col.textAlign Text.alignXsCenter ]
@@ -64,7 +69,7 @@ view model =
                     , Form.label [] [ text "City" ]
                     , Input.text
                         [ Input.large
-                        , Input.attrs [ placeholder "e.g. Southfield" ]
+                        , Input.attrs [ placeholder "e.g. Detroit" ]
                         , Input.onInput CityQueryUpdated
                         ]
                     ]
