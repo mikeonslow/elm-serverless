@@ -4,6 +4,6 @@
   "files.autoSave": "afterDelay",
   "[elm]": {
     "editor.formatOnSave": true,
-    "editor.formatOnSaveTimeout": 3000
+    "editor.formatOnSaveTimeout": 9000
   }
 }
