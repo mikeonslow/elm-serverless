@@ -17,6 +17,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
+import RemoteData exposing (..)
 import States
 import String.Extra as String
 import Task exposing (..)
@@ -28,7 +29,7 @@ import Task exposing (..)
 
 initialModel : Model
 initialModel =
-    { breweries = []
+    { breweries = NotAsked
     , selectedState = Nothing
     , cityQuery = ""
     , debounce = Debounce.init
@@ -36,7 +37,7 @@ initialModel =
 
 
 type alias Model =
-    { breweries : List Brewery.Data
+    { breweries : WebData (List Brewery.Data)
     , selectedState : Maybe String
     , cityQuery : String
     , debounce : Debounce String
@@ -77,8 +78,7 @@ view model =
                     ]
                 ]
             ]
-        , Grid.row []
-            (List.map viewBrewery model.breweries)
+        , Grid.row [] (viewBreweries model)
         ]
 
 
@@ -93,9 +93,44 @@ viewStateItem state selectedState =
     Select.item [] [ text <| state ]
 
 
+viewBreweries { breweries } =
+    let
+        viewCol content =
+            [ Grid.col (offset2Col8 ++ [ Col.attrs [ class "text-center" ] ]) content ]
+
+        viewLayer =
+            case breweries of
+                NotAsked ->
+                    viewCol
+                        [ Card.config []
+                            |> Card.block []
+                                [ Block.text [] [ text "Use the search fields above to search for breweries" ] ]
+                            |> Card.view
+                        ]
+
+                Loading ->
+                    viewCol
+                        [ br [] []
+                        , br [] []
+                        , i [ class "fa-3x fas fa-spinner fa-pulse text-warning" ] []
+                        ]
+
+                Failure err ->
+                    let
+                        x =
+                            Debug.log "err" err
+                    in
+                    viewCol [ text "Error...." ]
+
+                Success breweryList ->
+                    List.map viewBrewery breweryList
+    in
+    viewLayer
+
+
 viewBrewery brewery =
-    Grid.col [ Col.xs12 ]
-        [ Card.config [ Card.attrs [ class "mt-3" ] ]
+    Grid.col offset2Col8
+        [ Card.config []
             |> Card.block []
                 [ Block.titleH4 [] [ text brewery.name ]
                 , Block.text [] [ text brewery.street, br [] [], text <| viewBreweryAddress brewery ]
@@ -114,7 +149,7 @@ viewBreweryAddress { city, state, postalCode } =
 
 
 type Msg
-    = OpenBrewApiResponsed (Result Http.Error (List Brewery.Data))
+    = OpenBrewApiResponsed (WebData (List Brewery.Data))
     | CityQuerySaved String
     | StateSelectionChanged String
     | DebounceTriggered Debounce.Msg
@@ -127,7 +162,10 @@ update msg model =
         StateSelectionChanged state ->
             let
                 updatedModel =
-                    { model | selectedState = Just state }
+                    { model
+                        | selectedState = Just state
+                        , breweries = Loading
+                    }
             in
             ( updatedModel
             , postBreweries updatedModel
@@ -148,27 +186,21 @@ update msg model =
         CityQuerySaved city ->
             let
                 updatedModel =
-                    { model | cityQuery = city }
+                    { model
+                        | cityQuery = city
+                        , breweries = Loading
+                    }
             in
             ( updatedModel
             , postBreweries updatedModel
             )
 
         OpenBrewApiResponsed response ->
-            case response of
-                Ok breweries ->
-                    let
-                        updatedModel =
-                            { model | breweries = List.sortBy .name breweries }
-                    in
-                    ( updatedModel, Cmd.none )
-
-                Err error ->
-                    let
-                        x =
-                            Debug.log "error" error
-                    in
-                    ( model, Cmd.none )
+            let
+                updatedModel =
+                    { model | breweries = response }
+            in
+            ( updatedModel, Cmd.none )
 
         DebounceTriggered msg_ ->
             let
@@ -242,9 +274,7 @@ postBreweries { selectedState, cityQuery } =
         { url = brewApiEndpoint
         , body = Http.jsonBody (Brewery.queryEncoder state cityQuery)
         , expect =
-            Http.expectJson
-                OpenBrewApiResponsed
-                Brewery.decoder
+            Http.expectJson (RemoteData.fromResult >> OpenBrewApiResponsed) Brewery.decoder
         }
 
 
@@ -256,13 +286,13 @@ mapsUrl { name, street, city, state, postalCode } =
     "https://www.google.com/maps/search/?api=1&query=" ++ query
 
 
-
--- Detroit%20Beer%20Co%2C%201529%20Broadway%20St%20Ste%20100%2C%20Detroit%2C%20Michigan
-
-
 brewApiEndpoint =
     "/.netlify/functions/process"
 
 
 justifyContentCenter =
     class "justify-content-center"
+
+
+offset2Col8 =
+    [ Col.attrs [ class "mt-3" ], Col.xs8, Col.offsetXs2 ]
